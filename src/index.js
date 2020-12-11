@@ -12,9 +12,7 @@ const store = createStore(rootReducer, applyMiddleware(reduxThunk))
 
 const app = (
   <Provider store={store}>
-    <React.StrictMode>
       <App/>
-    </React.StrictMode>
   </Provider>
 )
 

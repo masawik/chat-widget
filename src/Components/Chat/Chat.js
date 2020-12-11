@@ -14,7 +14,6 @@ export default function Chat() {
   let chatBodyStyles = [styles.body]
   if (isCollapsed) chatBodyStyles.push(styles.collapsed)
   chatBodyStyles = chatBodyStyles.join(' ')
-
   return (
     <Fragment>
       <Header

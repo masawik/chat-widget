@@ -1,23 +1,30 @@
 import React from 'react'
 import styles from './ChatMessages.module.css'
+import './messagesAnimation.css'
 import MessageItem from "../MessageItem/MessageItem";
 import {connect} from "react-redux";
+import {CSSTransition, TransitionGroup} from "react-transition-group";
 
-  function ChatMessages({messages}) {
+function ChatMessages({messages}) {
 
 
   const $messages = messages.map(item => (
-    <MessageItem
+    <CSSTransition
+      timeout={200}
       key={item.id}
-      name={item.from}
-      text={item.msg}
-    />
+      classNames={"message"}
+    >
+      <MessageItem
+        name={item.from}
+        text={item.msg}
+      />
+    </CSSTransition>
   ))
 
   return (
-    <div className={styles.container}>
-      {$messages}
-    </div>
+    <TransitionGroup className={styles.container}>
+        {$messages}
+    </TransitionGroup>
   )
 }
 
