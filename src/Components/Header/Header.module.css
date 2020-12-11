@@ -31,6 +31,12 @@
 }
 
 .collapseBtnIcon {
+    transform: rotate(-90deg);
+    transition-property: transform;
+    transition-duration: .3s;
+}
+
+.collapsed {
     transform: rotate(90deg);
 }
 

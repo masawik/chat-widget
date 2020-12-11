@@ -1,31 +1,16 @@
 import React from 'react'
 import styles from './ChatMessages.module.css'
 import MessageItem from "../MessageItem/MessageItem";
+import {connect} from "react-redux";
 
-export default function ChatMessages() {
-  const messages = [
-    {
-      id: 'firstMessage',
-      name: 'я сам',
-      text: 'привет это же я сам ты чего, не узнал?'
-    },
-    {
-      id: 'wvergMessage',
-      name: 'Второй я',
-      text: 'как у тебя дела?'
-    },
-    {
-      id: 'fiervgvssage',
-      name: 'third_IM',
-      text: 'пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук пук'
-    },
-  ]
+  function ChatMessages({messages}) {
+
 
   const $messages = messages.map(item => (
     <MessageItem
       key={item.id}
-      name={item.name}
-      text={item.text}
+      name={item.from}
+      text={item.msg}
     />
   ))
 
@@ -35,3 +20,10 @@ export default function ChatMessages() {
     </div>
   )
 }
+
+const mapStateToProps = state => ({
+  messages: state.messages,
+  user: state.user
+})
+
+export default connect(mapStateToProps, null)(ChatMessages)

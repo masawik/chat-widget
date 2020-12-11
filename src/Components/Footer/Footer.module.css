@@ -28,16 +28,16 @@
     margin-top: 5px;
 }
 
-.optionsBtnIcon {
+.settingsBtnIcon {
     fill: var(--gray);
 }
 
-.optionsBtnIconOpen {
+.settingsOpen {
     transform: rotate(90deg);
     fill: black;
 }
 
-.optionsBtn:hover .optionsBtnIcon {
+.settingsBtn:hover .settingsBtnIcon {
     fill: var(--black);
 }
 
@@ -45,7 +45,7 @@
     fill: var(--green);
 }
 
-.optionsBtnIcon, .sendBtnIcon {
+.settingsBtnIcon, .sendBtnIcon {
     width: 20px;
     height: 20px;
     transition-property: transform, fill;
@@ -54,4 +54,8 @@
 
 .sendBtn:hover .sendBtnIcon {
     fill: var(--active-green);
+}
+
+.sendBtn:disabled .sendBtnIcon {
+    fill: var(--gray);
 }
