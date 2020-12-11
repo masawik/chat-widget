@@ -26,7 +26,10 @@ function Footer({status, onAdd}) {
 
   function formSubmit(e) {
     e.preventDefault()
-    onAdd(text)
+    const trimmedText = text.trim()
+    if (trimmedText) {
+      onAdd(trimmedText)
+    }
   }
   
   function settingsToggle() {
