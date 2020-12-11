@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    border: 1px solid var(--border);
+    padding: 0 10px;
+}
+
+.titleBox, .buttonsBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.titleBox {
+    flex-direction: column;
+    height: 100%;
+}
+
+.title {
+    font-weight: 500;
+}
+
+.online {
+    font-size: 12px;
+    color: var(--gray);
+}
+
+.pinBtn {
+    margin-right: 2px;
+}
+
+.collapseBtnIcon {
+    transform: rotate(90deg);
+}
+
+.pinBtnIcon, .collapseBtnIcon {
+    fill: var(--gray);
+    width: 20px;
+    height: 20px;
+    transition-property: fill, transform;
+    transition-duration: .3s;
+}
+
+.collapseBtn:hover .collapseBtnIcon,
+.pinBtn:hover .pinBtnIcon {
+    fill: var(--black);
+}
