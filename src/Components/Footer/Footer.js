@@ -18,6 +18,12 @@ function Footer({status, onAdd}) {
     setText(e.target.value)
   }
 
+  function textAreaKeyHandler(e) {
+    if (e.keyCode === 13) {
+      formSubmit(e)
+    }
+  }
+
   function formSubmit(e) {
     e.preventDefault()
     onAdd(text)
@@ -42,6 +48,7 @@ function Footer({status, onAdd}) {
           disabled={isFormDisabled}
           value={text}
           onChange={inputHandler}
+          onKeyDown={textAreaKeyHandler}
         />
 
       <div className={styles.buttonsBox}>
