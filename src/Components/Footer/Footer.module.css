@@ -1,61 +1,9 @@
 .container {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     border: 1px solid var(--border);
-    padding: 10px 10px 0 10px;
-}
-
-.textarea {
-    border: 1px solid var(--border);
-    outline: 0;
-    padding: 8px 10px;
-    resize: none;
-    height: 100%;
-    width: 100%;
-    font-size: 12px;
-}
-
-.textarea:focus {
-    border: 1px solid var(--active-gray);
-}
-
-.buttonsBox {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 5px;
-}
-
-.settingsBtnIcon {
-    fill: var(--gray);
-}
-
-.settingsOpen {
-    transform: rotate(90deg);
-    fill: black;
-}
-
-.settingsBtn:hover .settingsBtnIcon {
-    fill: var(--black);
-}
-
-.sendBtnIcon {
-    fill: var(--green);
-}
-
-.settingsBtnIcon, .sendBtnIcon {
-    width: 20px;
-    height: 20px;
-    transition-property: transform, fill;
-    transition-duration: .3s;
-}
-
-.sendBtn:hover .sendBtnIcon {
-    fill: var(--active-green);
-}
-
-.sendBtn:disabled .sendBtnIcon {
-    fill: var(--gray);
+    padding: 10px;
+    min-height: 105px;
+    position: relative;
 }

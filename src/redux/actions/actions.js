@@ -1,6 +1,6 @@
 import {ADD_MSG, FINISH_SENDING, SENDED, START_SENDING} from "./actionTypes";
 import {getUniqueId} from "../../utils/utils";
-
+import io from 'socket.io-client'
 
 const startSend = () => ({type: START_SENDING})
 const sended = () => ({type: SENDED})
@@ -28,5 +28,11 @@ export function sendMsg(msg) {
 
       dispatch(finishSend())
     }, 2000)
+  }
+}
+
+export function socketConnect() {
+  return dispatch => {
+    const socket = io()
   }
 }
