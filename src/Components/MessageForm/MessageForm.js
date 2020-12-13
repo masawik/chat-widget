@@ -1,23 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import styles from './MessageForm.module.css'
+import {SENDED} from "../../redux/actions/actionTypes";
 import {connect} from "react-redux";
 import {sendMsg} from "../../redux/actions/actions";
-import {SENDED, START_SENDING} from "../../redux/actions/actionTypes";
 
-function MessageForm({status, onAdd, style, isLoading}) {
+function MessageForm({onAdd, style, isLoading}) {
   const [text, setText] = useState('')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-
-  useEffect(() => {
-    if (status === SENDED) {
-      setText('')
-    }
-  }, [status])
 
   function inputHandler(e) {
     setText(e.target.value)
   }
-
+  //TODO переносить строку на shift+enter
   function textAreaKeyHandler(e) {
     if (e.keyCode === 13) {
       formSubmit(e)
@@ -29,6 +23,7 @@ function MessageForm({status, onAdd, style, isLoading}) {
     const trimmedText = text.trim()
     if (trimmedText) {
       onAdd(trimmedText)
+      setText('')
     }
   }
   
@@ -75,11 +70,8 @@ function MessageForm({status, onAdd, style, isLoading}) {
   )
 }
 
-const mapStateToProps = state => ({status: state.status})
-
-const mapDispathToProps = dispath => ({
-  onAdd: msg => dispath(sendMsg(msg))
+const mapDispatchToProps = dispatch => ({
+  onAdd: msg => dispatch(sendMsg(msg))
 })
 
-
-export default connect(mapStateToProps, mapDispathToProps)(MessageForm)
+export default connect(null, mapDispatchToProps)(MessageForm)

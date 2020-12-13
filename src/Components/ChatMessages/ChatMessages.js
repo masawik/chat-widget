@@ -1,11 +1,21 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import styles from './ChatMessages.module.css'
 import './messagesAnimation.css'
 import MessageItem from "../MessageItem/MessageItem";
 import {connect} from "react-redux";
 import {CSSTransition, TransitionGroup} from "react-transition-group";
+let messageRef
 
 function ChatMessages({messages}) {
+
+  //TODO подумать как избавиться от этого
+  useEffect(() => {
+    messageRef = document.body.querySelector(`.${styles.container}`)
+  }, [])
+  useEffect(() => {
+    console.log(messageRef)
+    messageRef.scroll(0, 9999999)
+  }, [messages])
 
 
   const $messages = messages.map(item => (
@@ -22,15 +32,16 @@ function ChatMessages({messages}) {
   ))
 
   return (
-    <TransitionGroup className={styles.container}>
-        {$messages}
+    <TransitionGroup
+      className={styles.container}
+    >
+      {$messages}
     </TransitionGroup>
   )
 }
 
 const mapStateToProps = state => ({
-  messages: state.messages,
-  user: state.user
+  messages: state.messages
 })
 
 export default connect(mapStateToProps, null)(ChatMessages)

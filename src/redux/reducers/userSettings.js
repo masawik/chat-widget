@@ -1,10 +1,14 @@
+import {SET_USER_SETTINGS} from "../actions/actionTypes";
+
 const initialState = {
-  name: 'я сам',
-  color: '#FF00FFFF'
+  username: null,
+  color: null
 }
 
 export default function userSettings(state = initialState, action) {
   switch (action.type) {
+    case SET_USER_SETTINGS:
+      return action.payload
     default:
       return state
   }

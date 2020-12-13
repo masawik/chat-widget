@@ -1,20 +1,80 @@
-const app = require('express')()
+const utils = require('./utils')
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const cookie = require('cookie')
+const app = express()
+app.use(express.json())
+app.use(cookieParser())
 const server = require('http').Server(app)
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+  pingInterval: 10000
+})
 
-const rooms = new Map()
+const listeners = new Map()
+const users = new Map()
+const messages = [{
+  id: 'test',
+  from: 'username',
+  color: '#fff',
+  msg: 'test'
+}]
 
-app.get('/rooms', (req, res) => {
-  res.json(rooms)
+app.post('/create-user', (req, res) => {
+  const id = utils.idGenerator('user-')
+  users.set(id, req.body)
+  res.cookie('userid', id, {maxAge: 1000 * 60 * 60 * 24 * 365 * 20})
+  res.send(req.body)
+})
+
+app.get('/login', (req, res) => {
+  const cookiesUserId = req.cookies.userid
+  let responseBody = {isAuthed: false}
+
+  if (cookiesUserId && users.has(cookiesUserId)) {
+    responseBody = {
+      isAuthed: true,
+      payload: {...users.get(cookiesUserId)}
+    }
+  }
+
+  res.json(responseBody)
+})
+
+app.get('/messages', (req, res) => {
+  res.json(messages)
 })
 
 io.on('connection', socket => {
-  console.log('new user connected', socket.id)
+  io.emit('ALL_MESSAGES', messages)
+  const cookies = cookie.parse(socket.request.headers.cookie)
+  if (cookies.userid && users.has(cookies.userid)) {
+    listeners.set(socket.id, cookies.userid)
 
+    socket.on('SEND_MESSAGE', (msg) => {
+      const userId = listeners.get(socket.id)
+      const {username, color} = users.get(userId)
 
-  socket.on('disconnect', (reason) => {
-    console.log('user disconnected', reason)
-  });
+      const message = {
+        id: utils.idGenerator('msg-', 4),
+        from: username,
+        color: color,
+        msg
+      }
+
+      if(messages.length >= 100) {
+        messages.shift()
+      }
+
+      messages.push(message)
+      io.emit('NEW_MESSAGE', message)
+    })
+
+    socket.on('disconnect', (reason) => {
+      listeners.delete(socket.id)
+      io.emit('UPDATE_ONLINE_COUNTER', listeners.size)
+    });
+  }
+  io.emit('UPDATE_ONLINE_COUNTER', listeners.size)
 })
 
 server.listen(9999, err => {

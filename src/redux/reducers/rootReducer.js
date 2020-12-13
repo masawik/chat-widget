@@ -1,10 +1,12 @@
 import {combineReducers} from "redux";
 import messages from "./messages";
 import userSettings from "./userSettings";
-import status from './status'
+import requestStatus from './requestStatus'
+import chatUsersCounter from "./chatUsersCounter";
 
 export default combineReducers({
   messages,
   user: userSettings,
-  status
+  requestStatus,
+  chatUsersCounter
 })

@@ -1,3 +1,3 @@
-export function getUniqueId() {
-  return '_' + Math.random().toString(36).substr(2, 9);
+export function getUniqueId(len = 9) {
+  return '_' + Math.random().toString(36).substr(2, len);
 }

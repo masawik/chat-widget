@@ -1,10 +1,8 @@
 import React from 'react'
 import styles from './Header.module.css'
+import {connect} from "react-redux";
 
-export default function Header({isCollapsed, toggleChat}) {
-
-  const online = 123
-
+function Header({isCollapsed, toggleChat, online}) {
 
   let collapseBtnIconStyles = [styles.collapseBtnIcon]
   if (isCollapsed) collapseBtnIconStyles.push(styles.collapsed)
@@ -31,3 +29,9 @@ export default function Header({isCollapsed, toggleChat}) {
     </div>
   )
 }
+
+const mapStateToProps = state => ({
+  online: state.chatUsersCounter
+})
+
+export default connect(mapStateToProps)(Header)

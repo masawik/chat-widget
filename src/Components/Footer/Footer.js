@@ -1,13 +1,31 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from './Footer.module.css'
 import MessageForm from "../MessageForm/MessageForm";
 import AuthForm from "../AuthForm/AuthForm";
 import {Transition} from "react-transition-group";
+import {connect} from "react-redux";
+import {SENDED, START_SENDING} from "../../redux/actions/actionTypes";
 
 
-export default function Footer() {
+function Footer({status, userName}) {
   const [isAuthed, setIsAuthed] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    console.log('status changed: ', status)
+
+    if (status === START_SENDING) {
+      setIsLoading(true)
+    } else if (status === SENDED) {
+      setIsLoading(false)
+    }
+  }, [status])
+
+  useEffect(() => {
+    console.log('userName changed: ', userName)
+
+    if (userName) setIsAuthed(true)
+  }, [userName])
 
   // стили
   const transitionStyles = {
@@ -16,30 +34,12 @@ export default function Footer() {
     exiting: {opacity: 0},
     exited: {opacity: 0},
   };
-  const timeout = {
-    enter: 300,
-    exit: 300,
-  }
 
   return (
     <div className={styles.container}>
       <Transition
-        in={!isAuthed}
-        timeout={timeout}
-        mountOnEnter
-        unmountOnExit
-      >
-        {state => (
-          <AuthForm
-            style={transitionStyles[state]}
-            isLoading={isLoading}
-          />
-        )}
-      </Transition>
-
-      <Transition
         in={isAuthed}
-        timeout={timeout}
+        timeout={{enter: 300}}
         mountOnEnter
         unmountOnExit
       >
@@ -50,6 +50,27 @@ export default function Footer() {
           />
         )}
       </Transition>
+
+      <Transition
+        in={!isAuthed}
+        timeout={{exit: 300}}
+        mountOnEnter
+        unmountOnExit
+      >
+        {state => (
+          <AuthForm
+            style={transitionStyles[state]}
+            isLoading={isLoading}
+          />
+        )}
+      </Transition>
     </div>
   )
 }
+
+const mapStateToProps = state => ({
+  status: state.requestStatus,
+  userName: state.user.username
+})
+
+export default connect(mapStateToProps)(Footer)

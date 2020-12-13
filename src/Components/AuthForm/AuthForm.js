@@ -1,13 +1,16 @@
 import React, {useState} from 'react'
 import styles from './AuthForm.module.css'
+import {auth} from "../../redux/actions/actions";
+import {connect} from "react-redux";
 
-export default function AuthForm({style, isLoading}) {
+function AuthForm({style, isLoading, onAuth}) {
 
   const [name, setName] = useState('')
   const [color, setColor] = useState('#76a306')
 
   const onSubmit = (e) => {
     e.preventDefault()
+    onAuth(name, color)
   }
 
   return (
@@ -42,3 +45,9 @@ export default function AuthForm({style, isLoading}) {
     </form>
   )
 }
+
+const mapDispatchToProps = dispatch => ({
+  onAuth: (name, color) => dispatch(auth(name, color))
+})
+
+export default connect(null, mapDispatchToProps)(AuthForm)

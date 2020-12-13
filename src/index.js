@@ -7,8 +7,9 @@ import {applyMiddleware, createStore} from "redux";
 import rootReducer from "./redux/reducers/rootReducer";
 import {Provider} from "react-redux";
 import reduxThunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
-const store = createStore(rootReducer, applyMiddleware(reduxThunk))
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(reduxThunk)))
 
 const app = (
   <Provider store={store}>

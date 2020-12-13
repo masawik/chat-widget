@@ -1,14 +1,21 @@
-import React, {Fragment, useState} from 'react'
+import React, {Fragment, useEffect, useState} from 'react'
 import styles from './Chat.module.css'
 import Header from "../Header/Header";
 import ChatMessages from "../ChatMessages/ChatMessages";
 import Footer from "../Footer/Footer";
 
-export default function Chat() {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+export default function Chat({isInitialized}) {
+  const [isCollapsed, setIsCollapsed] = useState(true)
+
+  useEffect(() => {
+    setIsCollapsed(!isInitialized)
+  }, [isInitialized])
 
   function toggleChat() {
-    setIsCollapsed(prevState => !prevState)
+    //TODO изменить анимацию разворачивания тела чата т.к. глючит на телефоне
+    if (isInitialized) {
+      setIsCollapsed(prevState => !prevState)
+    }
   }
 
   let chatBodyStyles = [styles.body]
