@@ -3,8 +3,6 @@
     flex-direction: column;
     height: 400px;
     overflow: hidden;
-    transition-property: height;
-    transition-duration: .3s;
 }
 
 .collapsed {

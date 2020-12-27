@@ -8,7 +8,7 @@ let messageRef
 
 function ChatMessages({messages}) {
 
-  //TODO подумать как избавиться от этого
+  //TODO подумать как избавиться от этого. написать какой-нибудь контроллер.
   useEffect(() => {
     messageRef = document.body.querySelector(`.${styles.container}`)
   }, [])

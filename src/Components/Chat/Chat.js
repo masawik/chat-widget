@@ -27,7 +27,6 @@ function Chat({init, serverStatus}) {
   }
 
   function toggleChat() {
-    //TODO изменить анимацию разворачивания тела чата т.к. глючит на телефоне
     if (serverStatus === SERVER_OK) setIsCollapsed(prevState => !prevState)
   }
 

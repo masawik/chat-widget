@@ -23,7 +23,7 @@ function Footer({status, userName}) {
     setIsAuthed(Boolean(userName))
   }, [userName])
 
-  // стили
+  // стили todo исправить появление формы авторизации при перезагрузке будучи авторизированным
   const transitionStyles = {
     entering: {opacity: 0, position: "absolute"},
     entered: {opacity: 1},
