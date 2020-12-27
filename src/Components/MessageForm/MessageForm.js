@@ -3,16 +3,15 @@ import styles from './MessageForm.module.css'
 import {connect} from "react-redux";
 import {sendMsg} from "../../redux/actions/actions";
 
-function MessageForm({onAdd, style, isLoading}) {
+function MessageForm({onAdd, isLoading}) {
   const [text, setText] = useState('')
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   function inputHandler(e) {
     setText(e.target.value)
   }
-  //TODO переносить строку на shift+enter
   function textAreaKeyHandler(e) {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && !e.shiftKey) {
       formSubmit(e)
     }
   }
@@ -37,7 +36,6 @@ function MessageForm({onAdd, style, isLoading}) {
     <form
       onSubmit={formSubmit}
       className={styles.form}
-      style={style}
     >
         <textarea
           className={styles.textarea}

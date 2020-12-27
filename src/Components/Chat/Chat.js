@@ -25,7 +25,7 @@ function Chat({init, serverStatus}) {
   function manualInit() {
     init()
   }
-
+  //todo вернуть анимацию сворачивания
   function toggleChat() {
     if (serverStatus === SERVER_OK) setIsCollapsed(prevState => !prevState)
   }

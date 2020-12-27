@@ -3,7 +3,7 @@ import styles from './AuthForm.module.css'
 import {auth} from "../../redux/actions/actions";
 import {connect} from "react-redux";
 
-function AuthForm({style, isLoading, onAuth}) {
+function AuthForm({isLoading, onAuth}) {
 
   const [name, setName] = useState('')
   const [color, setColor] = useState('#76a306')
@@ -16,7 +16,6 @@ function AuthForm({style, isLoading, onAuth}) {
   return (
     <form
       className={styles.form}
-      style={style}
       onSubmit={onSubmit}
     >
       <div className={styles.inputsBox}>

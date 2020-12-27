@@ -18,7 +18,7 @@ const messages = [{
   color: '#fff',
   msg: 'test'
 }]
-
+//todo добавить проверку одинаковых имен и добавить алерты
 app.post('/create-user', (req, res) => {
   const id = utils.idGenerator('user-')
   users.set(id, req.body)
