@@ -12,8 +12,6 @@ function Footer({status, userName}) {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    console.log('status changed: ', status)
-
     if (status === START_SENDING) {
       setIsLoading(true)
     } else if (status === SENDED) {
@@ -22,9 +20,7 @@ function Footer({status, userName}) {
   }, [status])
 
   useEffect(() => {
-    console.log('userName changed: ', userName)
-
-    if (userName) setIsAuthed(true)
+    setIsAuthed(Boolean(userName))
   }, [userName])
 
   // стили

@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import styles from './MessageForm.module.css'
-import {SENDED} from "../../redux/actions/actionTypes";
 import {connect} from "react-redux";
 import {sendMsg} from "../../redux/actions/actions";
 

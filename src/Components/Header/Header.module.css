@@ -1,6 +1,7 @@
 .container {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     height: 50px;
     border: 1px solid var(--border);
     padding: 0 10px;
@@ -26,6 +27,10 @@
     color: var(--gray);
 }
 
+.reloadBtn {
+    margin-right: 2px;
+}
+
 .pinBtn {
     margin-right: 2px;
 }
@@ -40,7 +45,7 @@
     transform: rotate(90deg);
 }
 
-.pinBtnIcon, .collapseBtnIcon {
+.pinBtnIcon, .collapseBtnIcon, .reloadBtnIcon {
     fill: var(--gray);
     width: 20px;
     height: 20px;
@@ -49,6 +54,7 @@
 }
 
 .collapseBtn:hover .collapseBtnIcon,
-.pinBtn:hover .pinBtnIcon {
+.pinBtn:hover .pinBtnIcon,
+.reloadBtn:hover .reloadBtnIcon {
     fill: var(--black);
 }

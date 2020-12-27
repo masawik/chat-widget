@@ -1,0 +1,18 @@
+.circle {
+    background-color: var(--gray);
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    animation: loading 2s infinite ease-in-out;
+}
+
+@keyframes loading {
+    from, to {
+        transform: scale(1);
+        opacity: 70%;
+    }
+    50% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}

@@ -45,7 +45,6 @@ app.get('/messages', (req, res) => {
 })
 
 io.on('connection', socket => {
-  io.emit('ALL_MESSAGES', messages)
   const cookies = cookie.parse(socket.request.headers.cookie)
   if (cookies.userid && users.has(cookies.userid)) {
     listeners.set(socket.id, cookies.userid)
@@ -69,7 +68,7 @@ io.on('connection', socket => {
       io.emit('NEW_MESSAGE', message)
     })
 
-    socket.on('disconnect', (reason) => {
+    socket.on('disconnect', () => {
       listeners.delete(socket.id)
       io.emit('UPDATE_ONLINE_COUNTER', listeners.size)
     });

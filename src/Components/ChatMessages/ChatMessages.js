@@ -13,7 +13,6 @@ function ChatMessages({messages}) {
     messageRef = document.body.querySelector(`.${styles.container}`)
   }, [])
   useEffect(() => {
-    console.log(messageRef)
     messageRef.scroll(0, 9999999)
   }, [messages])
 
