@@ -10,6 +10,7 @@ import {
 import io from 'socket.io-client'
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
+import {idGenerator} from "../../utils";
 axiosRetry(axios, { retries: 3, retryDelay: () => (1000) });
 
 let socket
@@ -23,13 +24,14 @@ const updateChatOnlineCounter = val => ({type: UPDATE_ONLINE_COUNTER, payload: v
 //todo разобраться с сервер статусами
 const setServerStatus = payload => ({type: SET_SERVER_STATUS, payload: payload})
 const showAlert = payload => ({type: SHOW_ALERT, payload: payload})
-export const hideAlert = () => ({type: HIDE_ALERT})
+export const hideAlert = payload => ({type: HIDE_ALERT, payload: payload})
 
-function alert(info) {
+export function alert(info) {
   return dispatch => {
-    dispatch(showAlert(info))
+    const newAlertId = idGenerator('alert', 4)
+    dispatch(showAlert({id: newAlertId, info: info}))
     setTimeout(() => {
-      dispatch(hideAlert())
+      dispatch(hideAlert(newAlertId))
     }, 10000)
   }
 }

@@ -1,48 +1,47 @@
 import React from 'react'
 import styles from './Alerts.module.css'
+import './Alerts.css'
 import {hideAlert} from "../../redux/actions/actions";
 import {connect} from "react-redux";
-import {Transition} from "react-transition-group";
+import {CSSTransition, TransitionGroup} from "react-transition-group";
 
-function Alerts({alert, onClose}) {
-  function close() {
-    onClose()
+function Alerts({alerts, onClose}) {
+  function close(id) {
+    onClose(id)
   }
 
-  const transitionStyles = {
-    entering: {transform: 'translateY(-100%)'},
-    entered: {transform: 'translateY(0)'},
-    exiting: {transform: 'translateY(-100%)'},
-  };
-
-  return (
-    <Transition
-      in={alert.visible}
-      timeout={300}
-      mountOnEnter
-      unmountOnExit
-    >
-      {state => (
+  const $alerts = Object.entries(alerts).reverse().map(([id, message]) => {
+    return (
+      <CSSTransition
+        key={id}
+        timeout={300}
+        classNames='alert-transition'
+      >
         <div
-          className={styles.container}
-          style={transitionStyles[state]}
-          onClick={close}
+          className={styles.alertItem}
+          onClick={() => close(id)}
         >
           <div className={styles.staticFiller}/>
           <div className={styles.filler}/>
-          <div className={styles.text}>{alert.message}</div>
+          <div className={styles.text}>{message}</div>
         </div>
-      )}
-    </Transition>
+      </CSSTransition>
+    )
+  });
+
+  return (
+    <TransitionGroup className={styles.container}>
+      {$alerts}
+    </TransitionGroup>
   )
 }
 
 const mapStateToProps = state => ({
-  alert: state.alert
+  alerts: state.alert
 })
 
 const mapDispatchToProps = dispatch => ({
-  onClose: () => dispatch(hideAlert())
+  onClose: id => dispatch(hideAlert(id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Alerts)

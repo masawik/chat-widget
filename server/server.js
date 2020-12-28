@@ -29,7 +29,6 @@ function isNewUserNameInvalid (newUser) {
   return false
 }
 
-//todo добавить проверку одинаковых имен и добавить алерты
 app.post('/create-user', (req, res) => {
   const invalidError = isNewUserNameInvalid(req.body)
   if (!invalidError) {

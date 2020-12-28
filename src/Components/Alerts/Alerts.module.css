@@ -1,12 +1,19 @@
 .container {
-    padding: 5px 10px;
-    width: 100%;
-    background-color: var(--white);
+    max-height: 200px;
+    overflow: auto;
+    width: calc(100% - 2px);
     position: absolute;
+    left: 1px;
+}
+
+.alertItem {
+    padding: 10px;
+    background-color: var(--white);
     transition-property: transform;
     transition-duration: 300ms;
-    transform: translateY(-100%);
     cursor: pointer;
+    position: relative;
+    transform: translateX(-100%);
 }
 
 .text {

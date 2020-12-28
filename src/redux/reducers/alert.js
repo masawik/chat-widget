@@ -1,16 +1,15 @@
 import {HIDE_ALERT, SHOW_ALERT} from "../actions/actionTypes";
 
-const initialState = {
-  visible: false,
-  message: null
-}
+const initialState = {}
 
 export default function alert(state = initialState, action) {
   switch (action.type) {
     case (SHOW_ALERT):
-      return {visible: true, message: action.payload}
+      return {...state, [action.payload.id]: action.payload.info}
     case (HIDE_ALERT):
-      return {...state, visible: false}
+      const newState = {...state}
+      delete newState[action.payload]
+      return newState
     default: return state
   }
 }
