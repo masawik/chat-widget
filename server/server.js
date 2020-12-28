@@ -47,7 +47,11 @@ function createError(code, info) {
 }
 
 function isMessageInvalid (msg) {
-
+  if (msg.length < 3) {
+    return 'сообщение не может быть короче 3 символов'
+  } else if ( msg.length > 200) {
+    return 'сообщение не может быть длиннее 200 символов'
+  }
 
   return false
 }
@@ -93,7 +97,7 @@ app.post('/send_msg', (req, res) => {
   const user = users.get(userid)
   const {username, color, msgsCount} = user
 
-  if (msgsCount > MAX_MSGS_COUNT_PER_FLOOD_INTERVAL) return res.send(createError(3, 'не флуди! мут на 20 секунд'))
+  if (msgsCount > MAX_MSGS_COUNT_PER_FLOOD_INTERVAL) return res.send(createError(3, 'stop flood! mute 20sec'))
 
   const msg = req.body.msg
   const msgError = isMessageInvalid(msg)
