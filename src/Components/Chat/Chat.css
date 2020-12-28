@@ -1,0 +1,22 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    overflow: hidden;
+    transition-property: transform;
+    transition-duration: 300ms;
+    transform-origin: top;
+}
+
+.body-collapsing-enter-done {
+    height: 0;
+    transform: scaleY(0);
+}
+
+.body-collapsing-enter {
+    transform: scaleY(0);
+}
+
+.body-collapsing-exit {
+    transform: scaleY(1);
+}

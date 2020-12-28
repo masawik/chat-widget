@@ -1,11 +1,12 @@
 import React, {Fragment, useEffect, useState} from 'react'
-import styles from './Chat.module.css'
+import './Chat.css'
 import Header from "../Header/Header";
 import ChatMessages from "../ChatMessages/ChatMessages";
 import Footer from "../Footer/Footer";
 import {initialization} from "../../redux/actions/actions";
 import {connect} from "react-redux";
 import {SERVER_CONNECTING, SERVER_OK, SERVER_UNAVAILABLE} from "../../redux/actions/actionTypes";
+import {CSSTransition} from "react-transition-group";
 
 function Chat({init, serverStatus}) {
   const [isCollapsed, setIsCollapsed] = useState(true)
@@ -25,14 +26,11 @@ function Chat({init, serverStatus}) {
   function manualInit() {
     init()
   }
-  //todo вернуть анимацию сворачивания
+
   function toggleChat() {
     if (serverStatus === SERVER_OK) setIsCollapsed(prevState => !prevState)
   }
 
-  let chatBodyStyles = [styles.body]
-  if (isCollapsed) chatBodyStyles.push(styles.collapsed)
-  chatBodyStyles = chatBodyStyles.join(' ')
   return (
     <Fragment>
       <Header
@@ -42,13 +40,20 @@ function Chat({init, serverStatus}) {
         reconnect={manualInit}
         toggleChat={toggleChat}
       />
-      <div className={chatBodyStyles}>
-        <ChatMessages/>
-        <Footer/>
-      </div>
+      <CSSTransition
+        in={isCollapsed}
+        timeout={300}
+        classNames='body-collapsing'
+      >
+        <div className='body'>
+          <ChatMessages/>
+          <Footer/>
+        </div>
+      </CSSTransition>
     </Fragment>
   )
 }
+
 const mapStateToProps = state => ({
   serverStatus: state.serverStatus
 })
