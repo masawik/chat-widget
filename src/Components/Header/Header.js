@@ -22,12 +22,6 @@ function Header({isCollapsed, toggleChat, online, isConnecting, isError, reconne
     </Fragment>
   )
 
-  const $error = (
-    <Fragment>
-      connection error :(
-    </Fragment>
-  )
-
   const $reconnectBtn = (
     <button
       className={`btn ${styles.reloadBtn}`}
@@ -37,14 +31,18 @@ function Header({isCollapsed, toggleChat, online, isConnecting, isError, reconne
     </button>
   )
 
+  const $error = (
+    <Fragment>
+      {$reconnectBtn} connection error :(
+    </Fragment>
+  )
+
   const $content = isConnecting ? $connecting : isError ? $error : $title
 
   return (
     <div className={styles.container}>
       {$content}
       <div className={styles.buttonsBox}>
-        {isError ? $reconnectBtn : null}
-
         <button className={`btn ${styles.pinBtn}`}>
           <svg className={styles.pinBtnIcon} viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
             <g>
