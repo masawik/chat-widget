@@ -1,4 +1,4 @@
-.body {
+.chat-body {
     display: flex;
     flex-direction: column;
     height: 400px;
@@ -6,6 +6,7 @@
     transition-property: transform;
     transition-duration: 300ms;
     transform-origin: top;
+    position: relative;
 }
 
 .body-collapsing-enter-done {

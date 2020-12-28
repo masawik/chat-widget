@@ -1,9 +1,9 @@
 import {
   ADD_MSG,
-  FINISH_SENDING,
+  FINISH_SENDING, HIDE_ALERT,
   SENDED, SERVER_CONNECTING, SERVER_OK, SERVER_UNAVAILABLE,
   SET_MSGS, SET_SERVER_STATUS,
-  SET_USER_SETTINGS,
+  SET_USER_SETTINGS, SHOW_ALERT,
   START_SENDING,
   UPDATE_ONLINE_COUNTER
 } from "./actionTypes";
@@ -13,14 +13,26 @@ import axiosRetry from 'axios-retry'
 axiosRetry(axios, { retries: 3, retryDelay: () => (1000) });
 
 let socket
-
+//todo проверить все экспортируемые функции на зависимость и перестать экспортировать независимые
 const startSend = () => ({type: START_SENDING})
 const sended = () => ({type: SENDED})
 const finishSend = () => ({type: FINISH_SENDING})
 const setUserSettings = settings => ({type: SET_USER_SETTINGS, payload: settings})
 const clearUserSettings = () => ({type: SET_USER_SETTINGS, payload: {username: null, color: null}})
 const updateChatOnlineCounter = val => ({type: UPDATE_ONLINE_COUNTER, payload: val})
-const setServerStatus = (payload) => ({type: SET_SERVER_STATUS, payload: payload})
+//todo разобраться с сервер статусами
+const setServerStatus = payload => ({type: SET_SERVER_STATUS, payload: payload})
+const showAlert = payload => ({type: SHOW_ALERT, payload: payload})
+export const hideAlert = () => ({type: HIDE_ALERT})
+
+function alert(info) {
+  return dispatch => {
+    dispatch(showAlert(info))
+    setTimeout(() => {
+      dispatch(hideAlert())
+    }, 10000)
+  }
+}
 
 export function addMsg(id, from, msg) {
   return {
@@ -53,21 +65,29 @@ export function auth(username, color) {
   return dispatch => {
     dispatch(startSend())
     const settings = {username, color}
-
-    axios.post('/create-user', settings)
+    axios
+      .post('/create-user', settings)
       .then(res => {
         if (res.status === 200) {
-          dispatch(setUserSettings(settings))
-          socket.disconnect(true)
-          socket.connect()
-          dispatch(sended())
-          dispatch(finishSend())
+          if (res.data.error) {
+            dispatch(alert(res.data.text))
+            console.error('ошибка. неверное имя пользователя')
+          } else {
+            dispatch(setUserSettings(settings))
+            socket.disconnect(true)
+            socket.connect()
+          }
         }
+        dispatch(sended())
+        dispatch(finishSend())
+      })
+      .catch(e => {
+        console.error('ошибка при создании пользователя', e)
       })
   }
 }
 
-export function socketConnect() {
+function socketConnect() {
   return dispatch => {
     socket = io()
     socket.on('disconnect', reason => {

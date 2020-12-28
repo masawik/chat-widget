@@ -1,0 +1,44 @@
+.container {
+    padding: 5px 10px;
+    width: 100%;
+    background-color: var(--white);
+    position: absolute;
+    transition-property: transform;
+    transition-duration: 300ms;
+    transform: translateY(-100%);
+    cursor: pointer;
+}
+
+.text {
+    text-align: center;
+}
+
+.staticFiller {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    background-color: var(--transparent-red);
+}
+
+.filler {
+    background-color: var(--red);
+    position: absolute;
+    left: 0;
+    height: 2px;
+    bottom: 0;
+    right: 0;
+    transform-origin: left;
+    animation: scaling 10s ease-in-out;
+}
+
+@keyframes scaling {
+    from {
+        transform: scaleX(1);
+    }
+
+    to {
+        transform: scaleX(0);
+    }
+}

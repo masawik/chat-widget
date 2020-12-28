@@ -35,6 +35,8 @@ function ChatMessages({messages}) {
     </CSSTransition>
   ))
 
+
+  //TODO добавить "сообщений пока нет" если сообщений нет. выделять сообщение жирным, если оно адресовано мне
   return (
     <div
       ref={messageRef}
@@ -53,4 +55,4 @@ const mapStateToProps = state => ({
   messages: state.messages
 })
 
-export default connect(mapStateToProps, null)(ChatMessages)
+export default connect(mapStateToProps)(ChatMessages)

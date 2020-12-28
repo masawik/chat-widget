@@ -7,6 +7,7 @@ import {initialization} from "../../redux/actions/actions";
 import {connect} from "react-redux";
 import {SERVER_CONNECTING, SERVER_OK, SERVER_UNAVAILABLE} from "../../redux/actions/actionTypes";
 import {CSSTransition} from "react-transition-group";
+import Alerts from "../Alerts/Alerts";
 
 function Chat({init, serverStatus}) {
   const [isCollapsed, setIsCollapsed] = useState(true)
@@ -45,7 +46,8 @@ function Chat({init, serverStatus}) {
         timeout={300}
         classNames='body-collapsing'
       >
-        <div className='body'>
+        <div className='chat-body'>
+          <Alerts />
           <ChatMessages/>
           <Footer/>
         </div>

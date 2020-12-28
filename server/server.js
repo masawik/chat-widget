@@ -12,18 +12,34 @@ const io = require('socket.io')(server, {
 
 const listeners = new Map()
 const users = new Map()
-const messages = [{
-  id: 'test',
-  from: 'username',
-  color: '#fff',
-  msg: 'test'
-}]
+const messages = []
+
+function isNewUserNameInvalid (newUser) {
+  if (newUser.username.length < 4) {
+    return 'Имя пользователя не может быть короче 4 символов'
+  } else if (newUser.username.length > 10) {
+    return 'Имя пользователя не может быть длиннее 10 символов'
+  }
+
+  for (let user of users.values()) {
+     if (user.username === newUser.username) {
+      return 'Пользователь с таким именем уже существует'
+    }
+  }
+  return false
+}
+
 //todo добавить проверку одинаковых имен и добавить алерты
 app.post('/create-user', (req, res) => {
-  const id = utils.idGenerator('user-')
-  users.set(id, req.body)
-  res.cookie('userid', id, {maxAge: 1000 * 60 * 60 * 24 * 365 * 20})
-  res.send(req.body)
+  const invalidError = isNewUserNameInvalid(req.body)
+  if (!invalidError) {
+    const id = utils.idGenerator('user-')
+    users.set(id, req.body)
+    res.cookie('userid', id, {maxAge: 1000 * 60 * 60 * 24 * 365 * 20})
+    res.send({error: false})
+  } else {
+    res.send({error: true, text: invalidError})
+  }
 })
 
 app.get('/login', (req, res) => {
@@ -45,8 +61,11 @@ app.get('/messages', (req, res) => {
 })
 
 io.on('connection', socket => {
-  const cookies = cookie.parse(socket.request.headers.cookie)
-  if (cookies.userid && users.has(cookies.userid)) {
+  let cookies
+  if (socket.request.headers.cookie) {
+    cookies = cookie.parse(socket.request.headers.cookie)
+  }
+  if (cookies && cookies.userid && users.has(cookies.userid)) {
     listeners.set(socket.id, cookies.userid)
 
     socket.on('SEND_MESSAGE', (msg) => {
