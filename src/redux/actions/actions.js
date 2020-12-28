@@ -11,7 +11,8 @@ import io from 'socket.io-client'
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
 import {idGenerator} from "../../utils";
-axiosRetry(axios, { retries: 3, retryDelay: () => (1000) });
+
+axiosRetry(axios, {retries: 3, retryDelay: () => (1000)});
 
 let socket
 //todo проверить все экспортируемые функции на зависимость и перестать экспортировать независимые
@@ -57,9 +58,31 @@ export function setMsgs(msgs) {
 export function sendMsg(msg) {
   return dispatch => {
     dispatch(startSend())
-    socket.emit('SEND_MESSAGE', msg)
-    dispatch(sended())
-    dispatch(finishSend())
+    axios
+      .post('/send_msg', {msg})
+      .then(res => {
+        if (res.data.error) {
+          const error = res.data
+          dispatch(alert(error.info))
+          if (error.code === 1) {
+            dispatch(clearUserSettings())
+          }
+          if (error.code === 3) {
+            dispatch(startSend())
+            setTimeout(() => {
+              dispatch(sended())
+              dispatch(finishSend())
+            }, 20000)
+            return
+          }
+        }
+        dispatch(sended())
+        dispatch(finishSend())
+      })
+      .catch(e => {
+        console.error('ошибка при отправке сообщения', e)
+      })
+
   }
 }
 
@@ -70,15 +93,12 @@ export function auth(username, color) {
     axios
       .post('/create-user', settings)
       .then(res => {
-        if (res.status === 200) {
-          if (res.data.error) {
-            dispatch(alert(res.data.text))
-            console.error('ошибка. неверное имя пользователя')
-          } else {
-            dispatch(setUserSettings(settings))
-            socket.disconnect(true)
-            socket.connect()
-          }
+        if (res.data.error) {
+          dispatch(alert(res.data.info))
+        } else {
+          dispatch(setUserSettings(settings))
+          socket.disconnect(true)
+          socket.connect()
         }
         dispatch(sended())
         dispatch(finishSend())
