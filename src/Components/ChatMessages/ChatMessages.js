@@ -1,21 +1,26 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import styles from './ChatMessages.module.css'
 import './messagesAnimation.css'
 import MessageItem from "../MessageItem/MessageItem";
 import {connect} from "react-redux";
 import {CSSTransition, TransitionGroup} from "react-transition-group";
-let messageRef
 
 function ChatMessages({messages}) {
+  const [isMessagesTouched, setIsMessagesTouched] = useState(false)
+  const messageRef = useRef()
 
-  //TODO подумать как избавиться от этого. написать какой-нибудь контроллер.
   useEffect(() => {
-    messageRef = document.body.querySelector(`.${styles.container}`)
-  }, [])
-  useEffect(() => {
-    messageRef.scroll(0, 9999999)
+    const $el = messageRef.current
+    const elScrollHeight = $el.scrollHeight
+
+    if (!isMessagesTouched || $el.scrollTop + 100 >= (elScrollHeight - $el.clientHeight)) {
+      $el.scroll(0, elScrollHeight)
+    }
   }, [messages])
 
+  function touchMessages() {
+    setIsMessagesTouched(true)
+  }
 
   const $messages = messages.map(item => (
     <CSSTransition
@@ -31,11 +36,16 @@ function ChatMessages({messages}) {
   ))
 
   return (
-    <TransitionGroup
+    <div
+      ref={messageRef}
       className={styles.container}
+      onScroll={isMessagesTouched ? null : touchMessages}
     >
-      {$messages}
-    </TransitionGroup>
+      <TransitionGroup
+      >
+        {$messages}
+      </TransitionGroup>
+    </div>
   )
 }
 
