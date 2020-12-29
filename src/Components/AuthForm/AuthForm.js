@@ -1,28 +1,40 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from './AuthForm.module.css'
 import {alert, auth} from "../../redux/actions/actions";
 import {connect} from "react-redux";
+import {REQUEST_ERROR, REQUEST_START, REQUEST_SUCCESS} from "../../redux/actions/actionTypes";
 
-function AuthForm({isLoading, onAuth, onError}) {
+function AuthForm({reqStatus, onAuth, onError}) {
 
   const [name, setName] = useState('')
   const [color, setColor] = useState('#76a306')
   const [isNameError, setIsNameError] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  function formValidation() {
-    if (name.length < 4) {
+  useEffect(() => {
+    if (reqStatus === REQUEST_START) {
+      setIsLoading(true)
+    } else if (reqStatus === REQUEST_SUCCESS || reqStatus === REQUEST_ERROR) {
+      setIsLoading(false)
+    }
+  }, [reqStatus])
+
+  function formValidation(username) {
+    if (username.length < 4) {
       return 'Имя пользователя не может быть короче 4 символов'
-    } else if (name.length > 10) {
+    } else if (username.length > 10) {
       return 'Имя пользователя не может быть длиннее 10 символов'
     }
+    return false
   }
 
   const onSubmit = (e) => {
     e.preventDefault()
-    const validationError = formValidation()
+    const username = name.trim()
+    const validationError = formValidation(username)
     if (!validationError) {
       setIsNameError(false)
-      onAuth(name, color)
+      onAuth(username, color)
     } else {
       setIsNameError(true)
       onError(validationError)
@@ -67,9 +79,13 @@ function AuthForm({isLoading, onAuth, onError}) {
   )
 }
 
+const mapStateToProps = state => ({
+  reqStatus: state.requestStatus
+})
+
 const mapDispatchToProps = dispatch => ({
   onAuth: (name, color) => dispatch(auth(name, color)),
   onError: (info) => dispatch(alert(info))
 })
 
-export default connect(null, mapDispatchToProps)(AuthForm)
+export default connect(mapStateToProps, mapDispatchToProps)(AuthForm)

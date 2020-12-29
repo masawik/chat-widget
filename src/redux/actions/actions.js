@@ -1,11 +1,11 @@
 import {
   ADD_MSG,
-  FINISH_SENDING, HIDE_ALERT,
-  SENDED, SERVER_CONNECTING, SERVER_OK, SERVER_UNAVAILABLE,
-  SET_MSGS, SET_SERVER_STATUS,
+  HIDE_ALERT,
+  REQUEST_SUCCESS, SERVER_CONNECTING, SERVER_OK, SERVER_UNAVAILABLE,
+  SET_MSGS,
   SET_USER_SETTINGS, SHOW_ALERT,
-  START_SENDING,
-  UPDATE_ONLINE_COUNTER
+  REQUEST_START,
+  UPDATE_ONLINE_COUNTER, REQUEST_ERROR
 } from "./actionTypes";
 import io from 'socket.io-client'
 import axios from 'axios'
@@ -16,14 +16,17 @@ axiosRetry(axios, {retries: 3, retryDelay: () => (1000)});
 
 let socket
 //todo проверить все экспортируемые функции на зависимость и перестать экспортировать независимые
-const startSend = () => ({type: START_SENDING})
-const sended = () => ({type: SENDED})
-const finishSend = () => ({type: FINISH_SENDING})
+const reqStart = () => ({type: REQUEST_START})
+const reqSuccess = () => ({type: REQUEST_SUCCESS})
+const reqError = () => ({type: REQUEST_ERROR})
+
+const serverConnecting = () => ({type: SERVER_CONNECTING})
+const serverOk = () => ({type: SERVER_OK})
+const serverUnavailable = () => ({type: SERVER_UNAVAILABLE})
+
 const setUserSettings = settings => ({type: SET_USER_SETTINGS, payload: settings})
 const clearUserSettings = () => ({type: SET_USER_SETTINGS, payload: {username: null, color: null}})
 const updateChatOnlineCounter = val => ({type: UPDATE_ONLINE_COUNTER, payload: val})
-//todo разобраться с сервер статусами
-const setServerStatus = payload => ({type: SET_SERVER_STATUS, payload: payload})
 const showAlert = payload => ({type: SHOW_ALERT, payload: payload})
 export const hideAlert = payload => ({type: HIDE_ALERT, payload: payload})
 
@@ -48,7 +51,7 @@ export function addMsg(id, from, msg) {
   }
 }
 
-export function setMsgs(msgs) {
+function setMsgs(msgs) {
   return {
     type: SET_MSGS,
     payload: msgs
@@ -57,30 +60,33 @@ export function setMsgs(msgs) {
 
 export function sendMsg(msg) {
   return dispatch => {
-    dispatch(startSend())
+    dispatch(reqStart())
     axios
       .post('/send_msg', {msg})
       .then(res => {
         if (res.data.error) {
           const error = res.data
           dispatch(alert(error.info))
+
           if (error.code === 1) {
             dispatch(clearUserSettings())
+            dispatch(reqError())
           }
+
           if (error.code === 3) {
-            dispatch(startSend())
+            dispatch(reqStart())
             setTimeout(() => {
-              dispatch(sended())
-              dispatch(finishSend())
+              dispatch(reqError())
             }, 20000)
-            return
           }
+
+        } else {
+          dispatch(reqSuccess())
         }
-        dispatch(sended())
-        dispatch(finishSend())
       })
       .catch(e => {
         console.error('ошибка при отправке сообщения', e)
+        dispatch(reqError())
       })
 
   }
@@ -88,23 +94,24 @@ export function sendMsg(msg) {
 
 export function auth(username, color) {
   return dispatch => {
-    dispatch(startSend())
+    dispatch(reqStart())
     const settings = {username, color}
     axios
       .post('/create-user', settings)
       .then(res => {
         if (res.data.error) {
           dispatch(alert(res.data.info))
+          dispatch(reqError())
         } else {
           dispatch(setUserSettings(settings))
-          socket.disconnect(true)
+          socket.disconnect()
           socket.connect()
+          dispatch(reqSuccess())
         }
-        dispatch(sended())
-        dispatch(finishSend())
       })
       .catch(e => {
         console.error('ошибка при создании пользователя', e)
+        dispatch(reqError())
       })
   }
 }
@@ -112,8 +119,22 @@ export function auth(username, color) {
 function socketConnect() {
   return dispatch => {
     socket = io()
+  }
+}
+
+function socketBreakHandler() {
+  return dispatch => {
+    socket.on('connect', () => {
+      dispatch(serverOk())
+    })
+
     socket.on('disconnect', reason => {
-      if (reason === 'transport error') {
+      if (reason === 'forced close') {
+        dispatch(reqStart())
+        socket.on('connect', () => {
+          dispatch(reqSuccess())
+        })
+      } else if (reason === 'transport error') {
         dispatch(initialization())
       }
     })
@@ -125,7 +146,6 @@ function getAuthData() {
     axios
       .get('/login')
       .then(res => {
-        dispatch(setServerStatus(SERVER_OK))
         if (res.data.isAuthed) {
           dispatch(setUserSettings(res.data.payload))
         } else {
@@ -134,7 +154,7 @@ function getAuthData() {
       })
       .catch(e => {
         socket.disconnect()
-        dispatch(setServerStatus(SERVER_UNAVAILABLE))
+        dispatch(serverUnavailable())
       })
   }
 }
@@ -170,8 +190,9 @@ function onlineCounterHandler() {
 
 export function initialization() {
   return dispatch => {
-    dispatch(setServerStatus(SERVER_CONNECTING))
+    dispatch(serverConnecting())
     dispatch(socketConnect())
+    dispatch(socketBreakHandler())
     dispatch(getAuthData())
     dispatch(getAllMessages())
     dispatch(messagesHandler())

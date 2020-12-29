@@ -1,17 +1,41 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import styles from './MessageForm.module.css'
 import {connect} from "react-redux";
-import {sendMsg} from "../../redux/actions/actions";
+import {alert, sendMsg} from "../../redux/actions/actions";
+import {REQUEST_ERROR, REQUEST_START, REQUEST_SUCCESS} from "../../redux/actions/actionTypes";
 
-function MessageForm({onAdd, isLoading}) {
+function MessageForm({onAdd, onError, reqStatus}) {
   const [text, setText] = useState('')
+  const [isTextError, setIsTextError] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (reqStatus === REQUEST_START) {
+      setIsLoading(true)
+    } else if (reqStatus === REQUEST_SUCCESS) {
+      setText('')
+      setIsLoading(false)
+    } else if (reqStatus === REQUEST_ERROR) {
+      setIsLoading(false)
+    }
+  }, [reqStatus])
+
+  function isMessageInvalid(msg) {
+    if (msg.length < 4) {
+      return 'сообщение не может быть короче 4 символов'
+    } else if (msg.length > 200) {
+      return 'сообщение не может быть длиннее 200 символов'
+    }
+    return false
+  }
 
   function inputHandler(e) {
     setText(e.target.value)
   }
+
   function textAreaKeyHandler(e) {
-    if (e.keyCode === 13 && !e.shiftKey) {
+    if (e.keyCode === 13) {
       formSubmit(e)
     }
   }
@@ -19,9 +43,13 @@ function MessageForm({onAdd, isLoading}) {
   function formSubmit(e) {
     e.preventDefault()
     const trimmedText = text.trim()
-    if (trimmedText) {
+    const error = isMessageInvalid(trimmedText)
+    if (!error) {
+      setIsTextError(false)
       onAdd(trimmedText)
-      setText('')
+    } else {
+      setIsTextError(true)
+      onError(error)
     }
   }
   
@@ -32,6 +60,7 @@ function MessageForm({onAdd, isLoading}) {
   let settingsBtnIconStyles = [styles.settingsBtnIcon]
   if (isSettingsOpen) settingsBtnIconStyles.push(styles.settingsOpen)
   settingsBtnIconStyles = settingsBtnIconStyles.join(' ')
+  const errorStyle = {'border': '1px solid #DC143C'}
   return (
     <form
       onSubmit={formSubmit}
@@ -42,6 +71,7 @@ function MessageForm({onAdd, isLoading}) {
           placeholder='Написать в чат'
           disabled={isLoading}
           value={text}
+          style={isTextError ? errorStyle : null}
           onChange={inputHandler}
           onKeyDown={textAreaKeyHandler}
         />
@@ -67,8 +97,13 @@ function MessageForm({onAdd, isLoading}) {
   )
 }
 
-const mapDispatchToProps = dispatch => ({
-  onAdd: msg => dispatch(sendMsg(msg))
+const mapStateToProps = state => ({
+  reqStatus: state.requestStatus
 })
 
-export default connect(null, mapDispatchToProps)(MessageForm)
+const mapDispatchToProps = dispatch => ({
+  onAdd: msg => dispatch(sendMsg(msg)),
+  onError: (info) => dispatch(alert(info))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(MessageForm)

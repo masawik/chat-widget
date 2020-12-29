@@ -6,6 +6,7 @@
     transition-property: transform;
     transition-duration: 300ms;
     transform-origin: top;
+    transform: scaleY(0);
     position: relative;
 }
 
@@ -19,5 +20,9 @@
 }
 
 .body-collapsing-exit {
+    transform: scaleY(1);
+}
+
+.body-collapsing-exit-done {
     transform: scaleY(1);
 }

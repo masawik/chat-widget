@@ -47,6 +47,7 @@ function createError(code, info) {
 }
 
 function isMessageInvalid (msg) {
+  //todo сделать валидацию на клиенте + сделать так чтоб форма не очищалась при ошибке
   if (msg.length < 3) {
     return 'сообщение не может быть короче 3 символов'
   } else if ( msg.length > 200) {
