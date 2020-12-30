@@ -105,6 +105,28 @@ export function auth(username, color) {
   }
 }
 
+export function edit(username, color) {
+  return dispatch => {
+    dispatch(reqStart())
+    const settings = {username, color}
+    axios
+      .post('/edit-user', settings)
+      .then(res => {
+        if (res.data.error) {
+          dispatch(alert(res.data.info))
+          dispatch(reqError())
+        } else {
+          dispatch(setUserSettings(settings))
+          dispatch(reqSuccess())
+        }
+      })
+      .catch(e => {
+        console.error('ошибка при создании пользователя', e)
+        dispatch(reqError())
+      })
+  }
+}
+
 function socketConnect() {
   return dispatch => {
     socket = io()

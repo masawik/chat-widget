@@ -11,14 +11,14 @@ function Header({isCollapsed, toggleChat, online, isConnecting, isError, reconne
 
   const $title = (
     <div className={styles.titleBox}>
-      <span className={styles.title}>Chat</span>
-      <span className={styles.online}>{online} online</span>
+      <span className={styles.title}>Чат</span>
+      <span className={styles.online}>{online} онлайн</span>
     </div>
   )
 
   const $connecting = (
     <Fragment>
-      <Loader/> connecting...
+      <Loader/> соединение...
     </Fragment>
   )
 
@@ -33,7 +33,7 @@ function Header({isCollapsed, toggleChat, online, isConnecting, isError, reconne
 
   const $error = (
     <Fragment>
-      {$reconnectBtn} connection error :(
+      {$reconnectBtn} ошибка соединения :(
     </Fragment>
   )
 

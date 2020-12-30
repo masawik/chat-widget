@@ -1,15 +1,5 @@
 .form {
-    display: flex;
-    transition-property: opacity;
-    transition-duration: .3s;
-}
-
-.inputsBox {
-    display: flex;
-    flex-direction: column;
-    margin-right: 10px;
-    max-width: 202px;
-    width: 80%;
+    width: 204px;
 }
 
 .input {
@@ -25,6 +15,10 @@
 }
 
 .btn {
+    vertical-align: top;
+    padding-top: 3px;
+    padding-bottom: 2px;
+    margin-left: 5px;
     color: var(--white);
     border: 1px solid var(--border);
     background-color: var(--green);
@@ -46,6 +40,7 @@
 }
 
 .CPLabel {
+    display: block;
     font-size: 12px;
     margin-bottom: 5px;
 }

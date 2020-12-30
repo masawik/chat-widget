@@ -23,15 +23,15 @@ setInterval(() => {
   })
 }, FLOOD_CONTROL_INTERVAL)
 
-function isUsernameInvalid (newUser) {
+function isUsernameInvalid (newUser, existUserId = null) {
   if (newUser.username.length < 4) {
     return 'Имя пользователя не может быть короче 4 символов'
   } else if (newUser.username.length > 10) {
     return 'Имя пользователя не может быть длиннее 10 символов'
   }
 
-  for (let user of users.values()) {
-     if (user.username === newUser.username) {
+  for (let [id, user] of users) {
+     if (user.username === newUser.username && id !== existUserId) {
       return 'Пользователь с таким именем уже существует'
     }
   }
@@ -55,12 +55,33 @@ function isMessageInvalid (msg) {
   return false
 }
 
+function getUserId (req) {
+  const rawCookies = req.headers.cookie
+  if (!rawCookies) return false
+
+  const {userid} = cookie.parse(rawCookies)
+  if (!users.has(userid)) return false
+  return userid
+}
+
 app.post('/create-user', (req, res) => {
   const invalidError = isUsernameInvalid(req.body)
   if (!invalidError) {
-    const id = utils.idGenerator('user-')
-    users.set(id, {...req.body, msgsCount: 0})
-    res.cookie('userid', id, {maxAge: 1000 * 60 * 60 * 24 * 365 * 20})
+    const userId = utils.idGenerator('user-')
+    res.cookie('userid', userId, {maxAge: 1000 * 60 * 60 * 24 * 365 * 20})
+    users.set(userId, {...req.body, msgsCount: 0})
+    res.send({error: false})
+  } else {
+    res.send({error: true, info: invalidError})
+  }
+})
+
+app.post('/edit-user', (req, res) => {
+  const userId = getUserId(req)
+  if (!userId) return res.send(createError(1, 'unauthorized'))
+  const invalidError = isUsernameInvalid(req.body, userId)
+  if (!invalidError) {
+    users.set(userId, {...req.body, msgsCount: 0})
     res.send({error: false})
   } else {
     res.send({error: true, info: invalidError})
@@ -86,12 +107,9 @@ app.get('/messages', (req, res) => {
 })
 
 app.post('/send_msg', (req, res) => {
-  const rawCookies = req.headers.cookie
-  if (!rawCookies) return res.send(createError(1, 'unauthorized'))
-
-  const {userid} = cookie.parse(rawCookies)
-  if (!users.has(userid)) return res.send(createError(1, 'unauthorized'))
-  const user = users.get(userid)
+  const userId = getUserId(req)
+  if (!userId) return res.send(createError(1, 'unauthorized'))
+  const user = users.get(userId)
   const {username, color, msgsCount} = user
 
   if (msgsCount > MAX_MSGS_COUNT_PER_FLOOD_INTERVAL) return res.send(createError(3, 'stop flood! mute 20sec'))
@@ -111,7 +129,7 @@ app.post('/send_msg', (req, res) => {
     messages.shift()
   }
 
-  users.set(userid, {...user, msgsCount: msgsCount + 1})
+  users.set(userId, {...user, msgsCount: msgsCount + 1})
   messages.push(message)
   io.emit('NEW_MESSAGE', message)
   res.send({error: false})
