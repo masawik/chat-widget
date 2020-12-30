@@ -6,6 +6,8 @@ import {connect} from "react-redux";
 import {CSSTransition, TransitionGroup} from "react-transition-group";
 import SystemMessage from "./SystemMessage/SystemMessage";
 import {setReplyPurpose} from "../../redux/actions/actions";
+import {colorsHexId} from "../colors";
+
 
 function ChatMessages({messages, myUserName, onSetPurpose}) {
   const [isMessagesTouched, setIsMessagesTouched] = useState(false)
@@ -42,6 +44,7 @@ function ChatMessages({messages, myUserName, onSetPurpose}) {
           text={msg}
           onSetPurpose={myUserName ===  name ? null : () => setPurpose(name)}
           highlighted={regExp.test(msg)}
+          nickNameColor={colorsHexId[item.color] || '#000'}
         />
       </CSSTransition>
     )

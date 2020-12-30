@@ -3,11 +3,12 @@ import styles from './AuthForm.module.css'
 import {alert, auth} from "../../redux/actions/actions";
 import {connect} from "react-redux";
 import {REQUEST_ERROR, REQUEST_START, REQUEST_SUCCESS} from "../../redux/actions/actionTypes";
+import ColorPicker from "../ColorPicker/ColorPicker";
 
 function AuthForm({reqStatus, onAuth, onError}) {
 
   const [name, setName] = useState('')
-  const [color, setColor] = useState('#76a306')
+  const [color, setColor] = useState(1)
   const [isNameError, setIsNameError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -54,27 +55,24 @@ function AuthForm({reqStatus, onAuth, onError}) {
       >
         <input
           className={styles.input}
-          placeholder='username'
           value={name}
           style={isNameError ? errorStyle : null}
           onChange={event => setName(event.target.value)}
           disabled={isLoading}
           type="text"
+          placeholder='nickname'
         />
 
-        <input
-          className={styles.input}
-          placeholder='color'
-          value={color}
-          onChange={event => setColor(event.target.value)}
-          disabled={isLoading}
-          type="text"
+        <span className={styles.CPLabel}>nickname color</span>
+        <ColorPicker
+          pickColor={setColor}
         />
       </div>
       <button
         className={`btn ${styles.btn}`}
         disabled={isLoading}
-      >Войти</button>
+      >Войти
+      </button>
     </form>
   )
 }

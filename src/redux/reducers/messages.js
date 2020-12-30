@@ -8,7 +8,7 @@ export default function messages(state = initialState, action) {
     case ADD_MSG:
       return [...state, action.payload]
     case SET_MSGS:
-      return action.payload
+      return [...state, ...action.payload]
     default:
       return state
   }

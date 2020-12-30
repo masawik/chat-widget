@@ -30,8 +30,12 @@ export const clearReplyPurpose = payload => ({type: CLEAR_REPLY_PURPOSE})
 
 const clearUserSettings = () => ({type: SET_USER_SETTINGS, payload: {username: null, color: null}})
 const updateChatOnlineCounter = val => ({type: UPDATE_ONLINE_COUNTER, payload: val})
+
 const showAlert = payload => ({type: SHOW_ALERT, payload: payload})
 export const hideAlert = payload => ({type: HIDE_ALERT, payload: payload})
+
+const addMsg = msg => ({type: ADD_MSG, payload: msg})
+const setMsgs = msgs => ({type: SET_MSGS, payload: msgs})
 
 export function alert(info) {
   return dispatch => {
@@ -40,24 +44,6 @@ export function alert(info) {
     setTimeout(() => {
       dispatch(hideAlert(newAlertId))
     }, 10000)
-  }
-}
-
-export function addMsg(id, from, msg) {
-  return {
-    type: ADD_MSG,
-    payload: {
-      id,
-      from,
-      msg
-    }
-  }
-}
-
-function setMsgs(msgs) {
-  return {
-    type: SET_MSGS,
-    payload: msgs
   }
 }
 
@@ -178,7 +164,7 @@ function getAllMessages() {
 function messagesHandler() {
   return dispatch => {
     socket.on('NEW_MESSAGE', i => {
-      dispatch(addMsg(i.id, i.from, i.msg))
+      dispatch(addMsg(i))
     })
   }
 }
