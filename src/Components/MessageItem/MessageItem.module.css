@@ -1,10 +1,15 @@
 .messageItem:not(:last-child) {
-    margin-bottom: 2px;
+    padding: 1px 0;
+}
+
+.messageItem:hover {
+    background-color: var(--light-gray);
 }
 
 .name {
     font-weight: 500;
     font-size: 13px;
+    cursor: pointer;
 }
 
 .name::after {
@@ -15,4 +20,12 @@
     font-weight: 400;
     font-size: 12px;
     word-wrap: break-word;
+}
+
+.highlighted {
+    background-color: var(--light-gray);
+}
+
+.highlighted span {
+    font-weight: 500;
 }

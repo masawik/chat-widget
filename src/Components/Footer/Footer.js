@@ -5,7 +5,7 @@ import AuthForm from "../AuthForm/AuthForm";
 import {connect} from "react-redux";
 
 
-function Footer({status, userName}) {
+function Footer({userName}) {
   const [isAuthed, setIsAuthed] = useState(false)
 
   useEffect(() => {

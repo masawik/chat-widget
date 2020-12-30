@@ -47,13 +47,11 @@ function createError(code, info) {
 }
 
 function isMessageInvalid (msg) {
-  //todo сделать валидацию на клиенте + сделать так чтоб форма не очищалась при ошибке
   if (msg.length < 3) {
     return 'сообщение не может быть короче 3 символов'
   } else if ( msg.length > 200) {
     return 'сообщение не может быть длиннее 200 символов'
   }
-
   return false
 }
 
@@ -80,7 +78,6 @@ app.get('/login', (req, res) => {
       payload: {username, color}
     }
   }
-
   res.json(responseBody)
 })
 
@@ -89,7 +86,6 @@ app.get('/messages', (req, res) => {
 })
 
 app.post('/send_msg', (req, res) => {
-  //todo не забыть обработать на клиенте. очишать авторизацию
   const rawCookies = req.headers.cookie
   if (!rawCookies) return res.send(createError(1, 'unauthorized'))
 
@@ -118,10 +114,9 @@ app.post('/send_msg', (req, res) => {
   users.set(userid, {...user, msgsCount: msgsCount + 1})
   messages.push(message)
   io.emit('NEW_MESSAGE', message)
-  res.send('ok')
+  res.send({error: false})
 })
 
-//todo убрать лишнее
 io.on('connection', socket => {
   let cookies
   if (socket.request.headers.cookie) {

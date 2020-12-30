@@ -1,25 +1,50 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import styles from './MessageForm.module.css'
 import {connect} from "react-redux";
-import {alert, sendMsg} from "../../redux/actions/actions";
+import {alert, clearReplyPurpose, sendMsg} from "../../redux/actions/actions";
 import {REQUEST_ERROR, REQUEST_START, REQUEST_SUCCESS} from "../../redux/actions/actionTypes";
 
-function MessageForm({onAdd, onError, reqStatus}) {
+function MessageForm({onAdd, onError, reqStatus, replyPurpose, replyProcessed}) {
   const [text, setText] = useState('')
+  const inputText = useRef()
   const [isTextError, setIsTextError] = useState(false)
+  //TODO сделать настройки и цвета
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
+    const isSuccess = reqStatus === REQUEST_SUCCESS
+    const isError = reqStatus === REQUEST_ERROR
     if (reqStatus === REQUEST_START) {
       setIsLoading(true)
-    } else if (reqStatus === REQUEST_SUCCESS) {
+    } else if (isSuccess) {
       setText('')
+    }
+
+    if (isSuccess || isError) {
       setIsLoading(false)
-    } else if (reqStatus === REQUEST_ERROR) {
-      setIsLoading(false)
+      focusInput()
     }
   }, [reqStatus])
+
+  useEffect(() => {
+    if (!replyPurpose) return
+    setText(prevState => {
+      prevState = prevState.trim()
+      if (prevState.length === 0) {
+        return replyPurpose + ', '
+      } else {
+        return prevState + ' @' + replyPurpose + ' '
+      }
+    })
+    replyProcessed()
+  }, [replyPurpose])
+
+  function focusInput() {
+    setTimeout(() => {
+      inputText.current.focus()
+    }, 0)
+  }
 
   function isMessageInvalid(msg) {
     if (msg.length < 4) {
@@ -49,6 +74,7 @@ function MessageForm({onAdd, onError, reqStatus}) {
       onAdd(trimmedText)
     } else {
       setIsTextError(true)
+      focusInput()
       onError(error)
     }
   }
@@ -74,6 +100,7 @@ function MessageForm({onAdd, onError, reqStatus}) {
           style={isTextError ? errorStyle : null}
           onChange={inputHandler}
           onKeyDown={textAreaKeyHandler}
+          ref={inputText}
         />
 
       <div className={styles.buttonsBox}>
@@ -98,12 +125,14 @@ function MessageForm({onAdd, onError, reqStatus}) {
 }
 
 const mapStateToProps = state => ({
-  reqStatus: state.requestStatus
+  reqStatus: state.requestStatus,
+  replyPurpose: state.replyPurpose,
 })
 
 const mapDispatchToProps = dispatch => ({
   onAdd: msg => dispatch(sendMsg(msg)),
-  onError: (info) => dispatch(alert(info))
+  onError: (info) => dispatch(alert(info)),
+  replyProcessed: () => dispatch(clearReplyPurpose())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageForm)

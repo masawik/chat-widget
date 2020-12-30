@@ -5,7 +5,7 @@ import {
   SET_MSGS,
   SET_USER_SETTINGS, SHOW_ALERT,
   REQUEST_START,
-  UPDATE_ONLINE_COUNTER, REQUEST_ERROR
+  UPDATE_ONLINE_COUNTER, REQUEST_ERROR, SET_REPLY_PURPOSE, CLEAR_REPLY_PURPOSE
 } from "./actionTypes";
 import io from 'socket.io-client'
 import axios from 'axios'
@@ -15,7 +15,6 @@ import {idGenerator} from "../../utils";
 axiosRetry(axios, {retries: 3, retryDelay: () => (1000)});
 
 let socket
-//todo проверить все экспортируемые функции на зависимость и перестать экспортировать независимые
 const reqStart = () => ({type: REQUEST_START})
 const reqSuccess = () => ({type: REQUEST_SUCCESS})
 const reqError = () => ({type: REQUEST_ERROR})
@@ -25,6 +24,10 @@ const serverOk = () => ({type: SERVER_OK})
 const serverUnavailable = () => ({type: SERVER_UNAVAILABLE})
 
 const setUserSettings = settings => ({type: SET_USER_SETTINGS, payload: settings})
+
+export const setReplyPurpose = payload => ({type: SET_REPLY_PURPOSE, payload: payload})
+export const clearReplyPurpose = payload => ({type: CLEAR_REPLY_PURPOSE})
+
 const clearUserSettings = () => ({type: SET_USER_SETTINGS, payload: {username: null, color: null}})
 const updateChatOnlineCounter = val => ({type: UPDATE_ONLINE_COUNTER, payload: val})
 const showAlert = payload => ({type: SHOW_ALERT, payload: payload})

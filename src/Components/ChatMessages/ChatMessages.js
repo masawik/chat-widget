@@ -4,8 +4,10 @@ import './messagesAnimation.css'
 import MessageItem from "../MessageItem/MessageItem";
 import {connect} from "react-redux";
 import {CSSTransition, TransitionGroup} from "react-transition-group";
+import SystemMessage from "./SystemMessage/SystemMessage";
+import {setReplyPurpose} from "../../redux/actions/actions";
 
-function ChatMessages({messages}) {
+function ChatMessages({messages, myUserName, onSetPurpose}) {
   const [isMessagesTouched, setIsMessagesTouched] = useState(false)
   const messageRef = useRef()
 
@@ -17,42 +19,56 @@ function ChatMessages({messages}) {
       $el.scroll(0, elScrollHeight)
     }
   }, [messages])
-
   function touchMessages() {
     setIsMessagesTouched(true)
   }
 
-  const $messages = messages.map(item => (
-    <CSSTransition
-      timeout={200}
-      key={item.id}
-      classNames={"message"}
-    >
-      <MessageItem
-        name={item.from}
-        text={item.msg}
-      />
-    </CSSTransition>
-  ))
+  function setPurpose(username) {
+    onSetPurpose(username)
+  }
 
+  const $messages = messages.map(item => {
+    const msg = item.msg
+    const name = item.from
+    const regExp = new RegExp('(^|@)' + myUserName + ',?')
+    return (
+      <CSSTransition
+        timeout={200}
+        key={item.id}
+        classNames={"message"}
+      >
+        <MessageItem
+          name={name}
+          text={msg}
+          onSetPurpose={myUserName ===  name ? null : () => setPurpose(name)}
+          highlighted={regExp.test(msg)}
+        />
+      </CSSTransition>
+    )
+  })
 
-  //TODO добавить "сообщений пока нет" если сообщений нет. выделять сообщение жирным, если оно адресовано мне
   return (
     <div
       ref={messageRef}
       className={styles.container}
       onScroll={isMessagesTouched ? null : touchMessages}
     >
-      <TransitionGroup
-      >
-        {$messages}
-      </TransitionGroup>
+      {
+        messages.length
+          ? <TransitionGroup>{$messages}</TransitionGroup>
+          : <SystemMessage message='сообщений пока нет :('/>
+      }
     </div>
   )
 }
 
 const mapStateToProps = state => ({
-  messages: state.messages
+  messages: state.messages,
+  myUserName: state.user.username
 })
 
-export default connect(mapStateToProps)(ChatMessages)
+const mapDispatchToProps = dispatch => ({
+  onSetPurpose: username => dispatch(setReplyPurpose(username))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatMessages)
