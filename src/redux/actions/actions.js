@@ -121,7 +121,7 @@ export function edit(username, color) {
         }
       })
       .catch(e => {
-        console.error('ошибка при создании пользователя', e)
+        console.error('ошибка при изменении данных пользователя', e)
         dispatch(reqError())
       })
   }

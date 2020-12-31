@@ -29,3 +29,13 @@
 .highlighted span {
     font-weight: 500;
 }
+
+@media (min-width: 425px) {
+    .name {
+        font-size: 15px;
+    }
+
+    .text {
+        font-size: 14px;
+    }
+}

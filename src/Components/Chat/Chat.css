@@ -3,7 +3,7 @@
     flex-direction: column;
     height: 420px;
     overflow: hidden;
-    transition-property: transform;
+    transition-property: transform, box-shadow;
     transition-duration: 300ms;
     transform-origin: top;
     transform: scaleY(0);
@@ -17,6 +17,7 @@
 
 .body-collapsing-enter {
     transform: scaleY(0);
+    box-shadow: none !important;
 }
 
 .body-collapsing-exit {

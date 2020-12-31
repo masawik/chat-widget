@@ -26,12 +26,27 @@
     color: var(--gray);
 }
 
+@media (min-width: 425px) {
+    .online {
+        font-size: 14px;
+    }
+    .title {
+        font-size: 18px;
+    }
+}
+
 .reloadBtn {
     margin-right: 2px;
 }
 
 .pinBtn {
     margin-right: 2px;
+}
+
+@media (max-width: 768px) {
+    .pinBtn {
+        display: none;
+    }
 }
 
 .collapseBtnIcon {
@@ -56,4 +71,10 @@
 .pinBtn:hover .pinBtnIcon,
 .reloadBtn:hover .reloadBtnIcon {
     fill: var(--black);
+}
+
+.contentArea {
+    display: flex;
+    align-items: center;
+    width: 100%;
 }

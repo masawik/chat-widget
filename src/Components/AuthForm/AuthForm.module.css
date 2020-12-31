@@ -1,5 +1,5 @@
 .form {
-    width: 204px;
+    width: 230px;
 }
 
 .input {
@@ -8,6 +8,7 @@
     padding: 2px 10px;
     font-size: 12px;
     height: 25px;
+    width: 160px;
 }
 
 .input:first-child {
@@ -43,4 +44,14 @@
     display: block;
     font-size: 12px;
     margin-bottom: 5px;
+}
+
+@media (min-width: 425px) {
+    .CPLabel, .input {
+        font-size: 14px;
+    }
+
+    .input {
+        width: 175px;
+    }
 }

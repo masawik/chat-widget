@@ -14,6 +14,12 @@
     font-size: 12px;
 }
 
+@media (min-width: 425px) {
+    .textarea {
+        font-size: 14px;
+    }
+}
+
 .textarea:focus {
     border: 1px solid var(--active-gray);
 }
@@ -61,3 +67,4 @@
 .sendBtn:disabled .sendBtnIcon {
     fill: var(--gray);
 }
+

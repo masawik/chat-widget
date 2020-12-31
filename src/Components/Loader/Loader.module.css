@@ -1,5 +1,11 @@
 .container {
     padding: 5px 10px;
+    display: flex;
+    align-items: center;
+}
+
+.text {
+    margin-left: 15px;
 }
 
 .loadingIcon {
