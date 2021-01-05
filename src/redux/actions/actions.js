@@ -8,7 +8,7 @@ import {
   UPDATE_ONLINE_COUNTER, REQUEST_ERROR, SET_REPLY_PURPOSE, CLEAR_REPLY_PURPOSE
 } from "./actionTypes";
 import io from 'socket.io-client'
-import axios from "../configuredAxios";
+import axios from "axios";
 import axiosRetry from 'axios-retry'
 import {idGenerator} from "../../utils";
 
@@ -129,7 +129,7 @@ export function edit(username, color) {
 
 function socketConnect() {
   return () => {
-    socket = io('https://young-bastion-29971.herokuapp.com/')
+    socket = io()
   }
 }
 
