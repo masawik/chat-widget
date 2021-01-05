@@ -5,9 +5,9 @@ import {Transition} from "react-transition-group";
 
 export default function OptionsPanel({open}) {
   const transitionStyles = {
-    entering: { opacity: 1, transform: 'scale(1)'},
-    entered:  { opacity: 1, transform: 'scale(1)'},
-    exiting:  { opacity: 0 },
+    entering: { opacity: 1 },
+    entered:  { opacity: 1 },
+    exiting:  { opacity: 0, transform: 'scale(0.5)' },
     exited:  { opacity: 0 },
   };
   return (

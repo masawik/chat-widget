@@ -8,11 +8,11 @@ import {
   UPDATE_ONLINE_COUNTER, REQUEST_ERROR, SET_REPLY_PURPOSE, CLEAR_REPLY_PURPOSE
 } from "./actionTypes";
 import io from 'socket.io-client'
-import axios from 'axios'
+import axios from "../configuredAxios";
 import axiosRetry from 'axios-retry'
 import {idGenerator} from "../../utils";
 
-axiosRetry(axios, {retries: 3, retryDelay: () => (1000)});
+axiosRetry(axios, {retries: 3});
 
 let socket
 const reqStart = () => ({type: REQUEST_START})
@@ -26,7 +26,7 @@ const serverUnavailable = () => ({type: SERVER_UNAVAILABLE})
 const setUserSettings = settings => ({type: SET_USER_SETTINGS, payload: settings})
 
 export const setReplyPurpose = payload => ({type: SET_REPLY_PURPOSE, payload: payload})
-export const clearReplyPurpose = payload => ({type: CLEAR_REPLY_PURPOSE})
+export const clearReplyPurpose = () => ({type: CLEAR_REPLY_PURPOSE})
 
 const clearUserSettings = () => ({type: SET_USER_SETTINGS, payload: {username: null, color: null}})
 const updateChatOnlineCounter = val => ({type: UPDATE_ONLINE_COUNTER, payload: val})
@@ -128,8 +128,8 @@ export function edit(username, color) {
 }
 
 function socketConnect() {
-  return dispatch => {
-    socket = io()
+  return () => {
+    socket = io('https://young-bastion-29971.herokuapp.com/')
   }
 }
 
@@ -157,7 +157,7 @@ function getAuthData() {
     axios
       .get('/login')
       .then(res => {
-        if (res.data.isAuthed) {
+        if (res.data['isAuthed']) {
           dispatch(setUserSettings(res.data.payload))
         } else {
           dispatch(clearUserSettings())
@@ -166,6 +166,7 @@ function getAuthData() {
       .catch(e => {
         socket.disconnect()
         dispatch(serverUnavailable())
+        console.error(e)
       })
   }
 }

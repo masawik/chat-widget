@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './Chat.css'
 import styles from './Chat.module.css'
 import Header from "../Header/Header";
@@ -15,13 +15,14 @@ import Draggable from 'react-draggable';
 function Chat({init, serverStatus}) {
   const [isCollapsed, setIsCollapsed] = useState(true)
   const [isPinned, setIsPinned] = useState(true)
-  const [containerStyles, setContainerStyles] = useState(null)
   const [chatPos, setChatPos] = useState({x: 0, y: 0})
-  const chatContainer = useRef()
+  const [lastChatPos, setLastChatPos] = useState(null)
 
   useEffect(() => {
+    const lastPos = window.localStorage.getItem('lastChatPosition')
+    if (lastPos) setLastChatPos(JSON.parse(lastPos))
     init()
-  }, [])
+  }, [init])
 
   useEffect(() => {
     if (serverStatus === SERVER_OK) {
@@ -41,42 +42,53 @@ function Chat({init, serverStatus}) {
 
   function togglePin() {
     if (isPinned) {
-      const $chat = chatContainer.current
-      const currentWidth = $chat.clientWidth < 400 ? $chat.clientWidth : 400
-
-      setContainerStyles({
-        'position': 'fixed',
-        'width': currentWidth,
-      })
-
       setIsPinned(false)
-      setChatPos({x: 10, y: 10})
+      setChatPos(lastChatPos || {x: 0, y: 0})
     } else {
-      setContainerStyles(null)
       setIsPinned(true)
       setChatPos({x: 0, y: 0})
     }
   }
 
   function onDragStop(event, dragEvent) {
-    setChatPos({x: dragEvent.x, y: dragEvent.y})
+    const maxX = window.innerWidth - dragEvent.node.clientWidth
+    const maxY = window.innerHeight - dragEvent.node.clientHeight
+
+    const X = maxX > dragEvent.x
+      ? dragEvent.x > -10 ? dragEvent.x : -10
+      : maxX
+    const Y = maxY > dragEvent.y
+      ? dragEvent.y > -20 ? dragEvent.y : -20
+      : maxY
+
+    const newPos = {x: X, y: Y}
+
+    window.localStorage.setItem('lastChatPosition', JSON.stringify(newPos))
+    setLastChatPos(newPos)
+    setChatPos(newPos)
   }
 
-  const dragHandle = "chat-header"
+  const unpinnedChatStyles = {
+    'position': 'fixed',
+    'width': '400px',
+    'top' : 10,
+    'left' : 10
+  }
+  const unpinnedChatBodyStyles = {'boxShadow': '0 10px 20px -5px rgba(0, 0, 0, 0.2)'}
+  const dragHandleTarget = "chat-header"
   return (
     <Draggable
       disabled={isPinned}
-      handle={'.' + dragHandle}
+      handle={'.' + dragHandleTarget}
       position={chatPos}
       onStop={onDragStop}
     >
       <div
         className={styles.container}
-        style={{...containerStyles}}
-        ref={chatContainer}
+        style={isPinned ? null : unpinnedChatStyles}
       >
         <Header
-          draggable={dragHandle}
+          draggable={dragHandleTarget}
           isCollapsed={isCollapsed}
           togglePin={togglePin}
           isPinned={isPinned}
@@ -92,7 +104,7 @@ function Chat({init, serverStatus}) {
         >
           <div
             className='chat-body'
-            style={isPinned ? null : {'boxShadow': '0 10px 20px -5px rgba(0, 0, 0, 0.2)'}}
+            style={isPinned ? null : unpinnedChatBodyStyles}
           >
             <Alerts/>
             <ChatMessages/>

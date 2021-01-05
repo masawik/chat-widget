@@ -21,6 +21,12 @@
     font-size: 12px;
 }
 
+@media (min-width: 425px) {
+    .text {
+        font-size: 14px;
+    }
+}
+
 .staticFiller {
     position: absolute;
     bottom: 0;

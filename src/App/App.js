@@ -9,7 +9,6 @@ export default function App() {
       <div className={styles.container}>
         <Chat />
       </div>
-      <span>другой контент страницы</span>
     </Fragment>
   );
 }

@@ -1,43 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0 maximum-scale=1" />
-    <meta name="theme-color" content="#000000" />
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, maximum-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
     <meta
-      name="description"
-      content="Web site created using create-react-app"
+            name="description"
+            content="Web site created using create-react-app"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+    <title>chat</title>
+</head>
+<body>
+<div class="container">
+    <main class="content">
+        <h1 class="title main-title">Чат</h1>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+        <section>
+            <h2 class="title">Использованные технологии</h2>
+            <div class="multi-section">
+                <div class="multi-section__item">
+                    <h3 class="title">front-end</h3>
+                    <ul class="list">
+                        <li>React</li>
+                        <li>Redux</li>
+                        <li>Socket.io</li>
+                        <li>Axios</li>
+                    </ul>
+                </div>
+                <div class="multi-section__item">
+                    <h3 class="title">back-end</h3>
+                    <ul class="list">
+                        <li>Express</li>
+                        <li>Socket.io</li>
+                    </ul>
+                    <p>Без БД. все данные хранятся в переменных</p>
+                </div>
+            </div>
+        </section>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        <section>
+            <h2 class="title">Функционал</h2>
+            <ul>
+                <li>Сохранение авторизации с помощью cookies.</li>
+                <li>Валидация ников новых пользователей. проверка на занятость, проверка на длину</li>
+                <li>Выбор цвета ника.</li>
+                <li>Ответ пользователю при клике по нику. Если в поле сообщения пусто, то вставляется
+                    ник получателя в начало сообщения с запятой. Если в поле сообщения что-то есть,
+                    то вставляется ник получателя с "@"</li>
+                <li>Выделение сообщений, адресованных текущему пользователю</li>
+                <li>Возможность изменить ник и его цвет в настройках</li>
+                <li>Возможность открепить и перемещать чат на десктопе</li>
+                <li>Анимированное сворачивание-разворачивание, появление меню, новых сообщений и пр.</li>
+                <li>Возможность закрыть алерт до конца таймера, кликнув на него.</li>
+                <li>Отображение количества авторизированных пользователей онлайн.</li>
+                <li>Адаптивность под мобильные устройства.</li>
+                <li>Если в данный момент чат прокручен не выше 3-4 последних сообщений, то при
+                    поступлении нового сообщения чат будет автоматически прокручен к нему. Если чат прокручен выше,
+                    то при поступлении нового сообщения положение скролла чата не изменится</li>
+            </ul>
+        </section>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+
+        <div class="filler">
+            Прочий контент страницы для демонстрации сворачивания
+        </div>
+    </main>
+</div>
+</body>
 </html>
